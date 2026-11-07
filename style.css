@@ -224,3 +224,48 @@ textarea:focus { border-color: var(--accent-dim); }
 }
 
 .build { opacity: 0.45; font-size: 0.8em; }
+
+/* Scam meter (0-100 gauge) */
+.meter {
+  text-align: center;
+  margin: 0 0 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.meter-title {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  margin: 0 0 6px;
+}
+
+.meter-svg { width: 100%; max-width: 280px; height: auto; display: block; margin: 0 auto; }
+
+.meter-svg .band { fill: none; stroke-width: 14; stroke-linecap: butt; opacity: 0.9; }
+.meter-svg .band-safe   { stroke: var(--accent); }
+.meter-svg .band-warn   { stroke: var(--warn); }
+.meter-svg .band-danger { stroke: var(--danger); }
+
+.meter-svg .needle {
+  transform-origin: 100px 100px;
+  transform: rotate(-90deg);
+  transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.meter-svg .needle line { stroke: var(--text); stroke-width: 3; stroke-linecap: round; }
+.meter-svg .hub { fill: var(--text); }
+.meter-svg .tick { fill: var(--text-dim); font-size: 9px; }
+
+.meter-reading { margin-top: 2px; line-height: 1; }
+.meter-score { font-size: 2.6rem; font-weight: 800; letter-spacing: -0.02em; }
+.meter-max { font-size: 1rem; color: var(--text-dim); margin-left: 2px; }
+.meter-label { margin-top: 6px; font-size: 0.85rem; font-weight: 600; }
+
+.meter.safe .meter-score, .meter.safe .meter-label { color: var(--accent); }
+.meter.suspicious .meter-score, .meter.suspicious .meter-label { color: var(--warn); }
+.meter.scam .meter-score, .meter.scam .meter-label { color: var(--danger); }
+
+@media (prefers-reduced-motion: reduce) {
+  .meter-svg .needle { transition: none; }
+}

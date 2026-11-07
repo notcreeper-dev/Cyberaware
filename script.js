@@ -22,6 +22,7 @@ function basicScan(message) {
   if (looksLikeOtp) {
     return {
       verdict: 'safe',
+      scam_score: 5,
       confidence: 'medium',
       why: 'This reads like a standard OTP message that warns you not to share the code, and it contains no links.',
       red_flags: [],
@@ -106,7 +107,10 @@ function basicScan(message) {
     action = 'If anything still feels off, contact the sender through an official channel before acting on the message.';
   }
 
-  return { verdict, confidence, why, red_flags: flags, recommended_action: action, basic: true };
+  // Turn the rule points into a 0-100 meter reading (about 10 points per rule point).
+  const scam_score = Math.min(100, score * 10);
+
+  return { verdict, scam_score, confidence, why, red_flags: flags, recommended_action: action, basic: true };
 }
 
 const smsInput = document.getElementById('smsInput');
@@ -123,6 +127,57 @@ const resultWhy = document.getElementById('resultWhy');
 const resultFlags = document.getElementById('resultFlags');
 const resultAction = document.getElementById('resultAction');
 const basicNote = document.getElementById('basicNote');
+const scamMeter = document.getElementById('scamMeter');
+const meterNeedle = document.getElementById('meterNeedle');
+const meterScore = document.getElementById('meterScore');
+const meterLabel = document.getElementById('meterLabel');
+
+// ---------------------------------------------------------------------------
+// Scam meter: a 0-100 gauge. The score is kept inside the band that matches
+// the verdict (safe 0-29, suspicious 30-69, scam 70-100) so the needle and the
+// verdict badge never disagree. If no score comes back, a typical value for
+// the verdict is used.
+// ---------------------------------------------------------------------------
+const SCORE_BANDS = {
+  safe:       { min: 0,  max: 29,  fallback: 10, label: 'Low risk' },
+  suspicious: { min: 30, max: 69,  fallback: 50, label: 'Medium risk' },
+  scam:       { min: 70, max: 100, fallback: 90, label: 'High risk' }
+};
+
+function normalizeScore(raw, verdict) {
+  const band = SCORE_BANDS[verdict] || SCORE_BANDS.suspicious;
+  const n = Number(raw);
+  if (raw === null || raw === undefined || raw === '' || !isFinite(n)) return band.fallback;
+  const clamped = Math.max(0, Math.min(100, Math.round(n)));
+  return Math.max(band.min, Math.min(band.max, clamped));
+}
+
+let meterTimer = null;
+function renderMeter(score, verdict) {
+  const band = SCORE_BANDS[verdict] || SCORE_BANDS.suspicious;
+  const key = SCORE_BANDS[verdict] ? verdict : 'suspicious';
+
+  scamMeter.className = 'meter ' + key;
+  scamMeter.setAttribute('aria-label', 'Scam meter: ' + score + ' out of 100, ' + band.label.toLowerCase());
+  meterLabel.textContent = band.label;
+
+  // Reset to zero, then sweep to the score on the next frame.
+  meterNeedle.style.transform = 'rotate(-90deg)';
+  meterScore.textContent = '0';
+  clearInterval(meterTimer);
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    meterNeedle.style.transform = 'rotate(' + (score * 1.8 - 90) + 'deg)';
+  }));
+
+  // Count the number up alongside the needle.
+  const start = performance.now();
+  const duration = 900;
+  meterTimer = setInterval(() => {
+    const t = Math.min(1, (performance.now() - start) / duration);
+    meterScore.textContent = Math.round(score * (1 - Math.pow(1 - t, 3)));
+    if (t >= 1) clearInterval(meterTimer);
+  }, 30);
+}
 
 smsInput.addEventListener('input', () => {
   charCount.textContent = smsInput.value.length;
@@ -228,6 +283,9 @@ function renderResult(data) {
 
   basicNote.classList.toggle('hidden', !data.basic);
   resultCard.classList.remove('hidden');
+
+  const meterVerdict = SCORE_BANDS[verdict] ? verdict : 'suspicious';
+  renderMeter(normalizeScore(data.scam_score, meterVerdict), meterVerdict);
 }
 
 function setLoading(isLoading) {

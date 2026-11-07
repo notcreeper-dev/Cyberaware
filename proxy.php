@@ -63,11 +63,16 @@ Respond with ONLY a single JSON object, no markdown fences, no commentary, in
 exactly this shape:
 {
   "verdict": "scam" | "suspicious" | "safe",
+  "scam_score": <integer 0-100>,
   "confidence": "low" | "medium" | "high",
   "why": "<1-2 sentence plain-English explanation>",
   "red_flags": ["<short flag>", "<short flag>", ...],
   "recommended_action": "<1 sentence of what the recipient should do>"
 }
+
+scam_score is the likelihood that the message is a scam, from 0 (certainly
+legitimate) to 100 (certainly a scam). Keep it consistent with the verdict:
+"safe" = 0-29, "suspicious" = 30-69, "scam" = 70-100.
 
 Use "scam" when you are confident it's fraudulent, "suspicious" when there are
 some warning signs but it's not clear-cut, and "safe" when it reads like a normal,
@@ -187,4 +192,11 @@ if (!in_array($verdict, ['scam', 'suspicious', 'safe'], true)) {
 }
 
 $parsed['verdict'] = $verdict;
+
+// Keep scam_score a clean integer between 0 and 100 (the page also re-checks it).
+if (isset($parsed['scam_score']) && is_numeric($parsed['scam_score'])) {
+    $parsed['scam_score'] = max(0, min(100, (int) round((float) $parsed['scam_score'])));
+} else {
+    unset($parsed['scam_score']);
+}
 echo json_encode($parsed);

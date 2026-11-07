@@ -25,14 +25,21 @@ If you hit rate limits often, switch `MODEL` in `config.php` to the paid slug:
 1. User pastes a message and clicks Scan.
 2. `script.js` POSTs `{ message }` to `proxy.php`.
 3. `proxy.php` sends it to OpenRouter with a system prompt asking for a strict
-   JSON verdict (`scam` / `suspicious` / `safe`, confidence, why, red flags,
-   recommended action).
+   JSON verdict (`scam` / `suspicious` / `safe`, a `scam_score` from 0 to 100, confidence,
+   why, red flags, recommended action).
 4. The JSON is returned to the browser and rendered as a result card.
 
 ## Notes
 - Requires `curl` enabled in PHP (standard on most shared hosts, including InfinityFree).
 - CORS header in `proxy.php` is wide open (`*`) for ease of testing — tighten
   `Access-Control-Allow-Origin` to your own domain once deployed.
+
+## Scam meter
+The result card opens with a 0-100 gauge. The model returns `scam_score`; the
+page keeps it inside the band of the verdict (safe 0-29, suspicious 30-69,
+scam 70-100) so the needle and badge always agree. If no score comes back, a
+typical value for the verdict is used. The basic rule-based check converts its
+points to a score too.
 
 ## Fallback when the AI is unavailable
 If the model is down, rate-limited, not configured, or `proxy.php` can't be
@@ -45,7 +52,7 @@ less accurate than the AI, so it is only a backup.
 ## If you still see `{"error":"Could not parse model response."}`
 That raw text only appears from an old `script.js`. Upload the new `index.html`,
 `script.js` and `style.css` together, then hard-refresh (Ctrl+F5, or clear the
-site's cache). The page loads files with `?v=4` so browsers fetch fresh copies.
+site's cache). The page loads files with `?v=5` so browsers fetch fresh copies.
 For model-side parse problems, set `'DEBUG' => true` in `config.php` to see
 the model's raw reply start and `finish_reason` in the error response.
 
@@ -53,4 +60,4 @@ the model's raw reply start and `finish_reason` in the error response.
 If the host answers `proxy.php` with an HTML page (the `aes.js` / "requires
 JavaScript" check) instead of JSON, the page reloads once to get a fresh check
 cookie and scans again automatically. If that still fails, it uses the basic
-rule-based check. The small "v4" in the footer shows which version is live.
+rule-based check. The small "v5" in the footer shows which version is live.
