@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberAware — SMS Scam Scanner</title>
+<link rel="stylesheet" href="style.css?v=4">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-icon">🛡️</span>
+      <span class="brand-name">CyberAware</span>
+    </div>
+    <p class="tagline">Paste a text message. Find out if it's a scam.</p>
+  </header>
+
+  <main class="container">
+
+    <section class="scan-card">
+      <label for="smsInput" class="field-label">SMS / text message</label>
+      <textarea
+        id="smsInput"
+        placeholder="e.g. Your package could not be delivered. Confirm your address here: http://bit.ly/4kd92... "
+        maxlength="2000"
+        rows="6"
+      ></textarea>
+      <div class="char-count"><span id="charCount">0</span>/2000</div>
+
+      <button id="scanBtn" class="scan-btn">
+        <span id="scanBtnText">Scan message</span>
+        <span id="scanSpinner" class="spinner hidden"></span>
+      </button>
+
+      <p id="errorMsg" class="error-msg hidden"></p>
+    </section>
+
+    <section id="resultCard" class="result-card hidden">
+      <p id="basicNote" class="basic-note hidden">
+        The AI check is unavailable right now, so this is a quick rule-based check.
+        It is less accurate, so treat it as a hint only.
+      </p>
+      <div class="result-header">
+        <span id="verdictBadge" class="verdict-badge">—</span>
+        <span id="confidenceBadge" class="confidence-badge"></span>
+      </div>
+
+      <div class="result-block">
+        <h3>Why</h3>
+        <p id="resultWhy">—</p>
+      </div>
+
+      <div class="result-block">
+        <h3>Red flags found</h3>
+        <ul id="resultFlags"></ul>
+      </div>
+
+      <div class="result-block">
+        <h3>Recommended action</h3>
+        <p id="resultAction">—</p>
+      </div>
+    </section>
+
+    <section class="tips">
+      <h2>Quick tips</h2>
+      <ul>
+        <li>Banks and delivery services never ask for passwords or OTP codes by text.</li>
+        <li>Shortened links (bit.ly, tinyurl) hide the real destination — be cautious.</li>
+        <li>Urgency ("act now", "account suspended") is a classic pressure tactic.</li>
+        <li>When in doubt, contact the company directly using a number from their official site, not the message.</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>CyberAware scans messages with an AI model and may be wrong. Use your own judgment for anything sensitive. <span class="build">v4</span></p>
+  </footer>
+
+  <script src="script.js?v=4"></script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+:root {
+  --bg: #0b1220;
+  --panel: #121c2e;
+  --panel-border: #22304a;
+  --text: #e6edf7;
+  --text-dim: #94a3b8;
+  --accent: #35e0b5;
+  --accent-dim: #1f8f73;
+  --danger: #ff5c6c;
+  --danger-dim: #4a1d22;
+  --warn: #ffc857;
+  --warn-dim: #4a3a14;
+  --safe-dim: #14402f;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: radial-gradient(circle at top, #0f1a2e 0%, var(--bg) 60%);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.topbar {
+  text-align: center;
+  padding: 40px 20px 24px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.brand-icon { font-size: 1.6rem; }
+
+.tagline {
+  color: var(--text-dim);
+  margin-top: 8px;
+  font-size: 1rem;
+}
+
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 20px 60px;
+}
+
+.scan-card, .result-card {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+textarea {
+  width: 100%;
+  background: #0d1526;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  color: var(--text);
+  padding: 14px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  resize: vertical;
+  outline: none;
+}
+
+textarea:focus { border-color: var(--accent-dim); }
+
+.char-count {
+  text-align: right;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.scan-btn {
+  margin-top: 16px;
+  width: 100%;
+  background: var(--accent);
+  color: #06201a;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: filter 0.15s ease;
+}
+
+.scan-btn:hover { filter: brightness(1.08); }
+.scan-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(6,32,26,0.3);
+  border-top-color: #06201a;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.hidden { display: none !important; }
+
+.error-msg {
+  color: var(--danger);
+  font-size: 0.85rem;
+  margin-top: 12px;
+  margin-bottom: 0;
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.verdict-badge {
+  font-weight: 800;
+  font-size: 1.1rem;
+  padding: 6px 14px;
+  border-radius: 999px;
+}
+
+.verdict-badge.scam {
+  background: var(--danger-dim);
+  color: var(--danger);
+}
+
+.verdict-badge.suspicious {
+  background: var(--warn-dim);
+  color: var(--warn);
+}
+
+.verdict-badge.safe {
+  background: var(--safe-dim);
+  color: var(--accent);
+}
+
+.confidence-badge {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.result-block { margin-top: 16px; }
+
+.result-block h3 {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  margin: 0 0 6px;
+}
+
+.result-block p { margin: 0; line-height: 1.5; }
+
+.result-block ul {
+  margin: 0;
+  padding-left: 20px;
+  line-height: 1.6;
+}
+
+.tips {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+.tips h2 {
+  font-size: 1rem;
+  margin: 0 0 12px;
+}
+
+.tips ul {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--text-dim);
+  line-height: 1.7;
+  font-size: 0.9rem;
+}
+
+.footer {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  padding: 0 20px 40px;
+}
+
+/* Shown when the AI model is unavailable and the basic scanner is used */
+.basic-note {
+  background: var(--warn-dim);
+  color: var(--warn);
+  border: 1px solid var(--warn);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.build { opacity: 0.45; font-size: 0.8em; }
